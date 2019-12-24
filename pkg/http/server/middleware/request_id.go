@@ -21,7 +21,7 @@ func RequestID() gin.HandlerFunc {
 		c.Set("RequestID", requestID)
 
 		// Set X-Request-Id header
-		c.Writer.Header().Set("X-api-template-Request-Id", requestID)
+		c.Writer.Header().Set("X-everest-Request-Id", requestID)
 		c.Next()
 	}
 }

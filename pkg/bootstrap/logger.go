@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/spf13/viper"
-	"github.com/yishanzhilu/api-template/pkg/common"
+	"github.com/yishanzhilu/everest/pkg/common"
 
 	"github.com/sirupsen/logrus"
 )

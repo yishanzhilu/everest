@@ -1,4 +1,4 @@
-module github.com/yishanzhilu/api-template
+module github.com/yishanzhilu/everest
 
 go 1.13
 

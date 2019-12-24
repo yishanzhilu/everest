@@ -2,7 +2,7 @@ package bootstrap
 
 import (
 	"github.com/spf13/viper"
-	"github.com/yishanzhilu/api-template/pkg/common"
+	"github.com/yishanzhilu/everest/pkg/common"
 )
 
 // InitConfig 会使用　viper 读取配置文件

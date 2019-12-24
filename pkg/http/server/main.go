@@ -5,13 +5,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
-	"github.com/yishanzhilu/api-template/pkg/http/server/middleware"
+	"github.com/yishanzhilu/everest/pkg/http/server/middleware"
 )
 
 // Start will start a gin server
 func Start() {
+	gin.SetMode(viper.GetString("runmode"))
 	server := gin.New()
-
 	server.Use(middleware.RequestID())
 	server.Use(middleware.GinLogger())
 	server.Use(gin.Recovery())
@@ -28,7 +28,8 @@ func Start() {
 	server.GET("/secret", func(c *gin.Context) {
 		c.Status(http.StatusInternalServerError)
 	})
+
 	// By default it serves on :8080 unless a
 	// PORT environment variable was defined.
-	server.Run(viper.GetString("ADDR"))
+	server.Run(viper.GetString("addr"))
 }

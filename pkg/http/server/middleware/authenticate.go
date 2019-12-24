@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/sirupsen/logrus"
-	"github.com/yishanzhilu/api-template/pkg/common"
+	"github.com/yishanzhilu/everest/pkg/common"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"

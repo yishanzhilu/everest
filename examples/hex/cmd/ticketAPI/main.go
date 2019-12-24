@@ -5,9 +5,9 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"github.com/sirupsen/logrus"
-	"github.com/yishanzhilu/api-template/examples/hex/internal/storage/mysql"
-	redisRepo "github.com/yishanzhilu/api-template/examples/hex/internal/storage/redis"
-	"github.com/yishanzhilu/api-template/examples/hex/internal/ticket"
+	"github.com/yishanzhilu/everest/examples/hex/internal/storage/mysql"
+	redisRepo "github.com/yishanzhilu/everest/examples/hex/internal/storage/redis"
+	"github.com/yishanzhilu/everest/examples/hex/internal/ticket"
 )
 
 func main() {

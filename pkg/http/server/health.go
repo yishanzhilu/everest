@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 	"github.com/heptiolabs/healthcheck"
-	"github.com/yishanzhilu/api-template/pkg/common"
+	"github.com/yishanzhilu/everest/pkg/common"
 )
 
 // RedisCheck 用于让 healthcheck 检查

@@ -5,7 +5,7 @@ import (
 	"regexp"
 
 	"github.com/jinzhu/gorm"
-	"github.com/yishanzhilu/api-template/pkg/common"
+	"github.com/yishanzhilu/everest/pkg/common"
 
 	// init mysql
 	_ "github.com/jinzhu/gorm/dialects/mysql"

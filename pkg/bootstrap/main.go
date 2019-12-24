@@ -4,8 +4,8 @@ import (
 	"sync"
 
 	"github.com/spf13/viper"
-	"github.com/yishanzhilu/api-template/pkg/common"
-	"github.com/yishanzhilu/api-template/pkg/http/server"
+	"github.com/yishanzhilu/everest/pkg/common"
+	"github.com/yishanzhilu/everest/pkg/http/server"
 )
 
 // Boot will bootstarp the program, commonly used with Close

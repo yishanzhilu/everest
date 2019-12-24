@@ -1,8 +1,8 @@
-# Yishan api-template
+# Yishan Everest
 
 <img src="./assets/logo.svg" alt="drawing" width="50"/>
 
-This is a api template repo used to start a new api project fast like a flash
+Yishan Workspace API Server
 
 It uses the following stack:
 - go module, package management, https://github.com/golang/go/wiki/Modules

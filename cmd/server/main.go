@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/yishanzhilu/api-template/pkg/bootstrap"
+	"github.com/yishanzhilu/everest/pkg/bootstrap"
 )
 
 func main() {

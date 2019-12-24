@@ -2,7 +2,7 @@ package bootstrap
 
 import (
 	"github.com/go-redis/redis"
-	"github.com/yishanzhilu/api-template/pkg/common"
+	"github.com/yishanzhilu/everest/pkg/common"
 )
 
 func mustConnectRedis(url string, password string) {

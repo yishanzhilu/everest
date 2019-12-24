@@ -3,7 +3,7 @@ package redis
 import (
 	"encoding/json"
 
-	"github.com/yishanzhilu/api-template/examples/hex/internal/ticket"
+	"github.com/yishanzhilu/everest/examples/hex/internal/ticket"
 
 	"github.com/go-redis/redis"
 	"github.com/sirupsen/logrus"

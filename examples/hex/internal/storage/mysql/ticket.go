@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/yishanzhilu/api-template/examples/hex/internal/ticket"
+	"github.com/yishanzhilu/everest/examples/hex/internal/ticket"
 )
 
 type ticketRepository struct {

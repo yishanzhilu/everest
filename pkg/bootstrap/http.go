@@ -3,7 +3,7 @@ package bootstrap
 import (
 	"time"
 
-	"github.com/yishanzhilu/api-template/pkg/common"
+	"github.com/yishanzhilu/everest/pkg/common"
 )
 
 func initHTTPClient() {
