@@ -15,6 +15,7 @@ func initLogger() {
 	} else {
 		common.Logger.SetFormatter(&logrus.TextFormatter{})
 		common.Logger.SetOutput(os.Stdout)
+		common.Logger.SetReportCaller(true)
 		common.Logger.SetLevel(logrus.DebugLevel)
 	}
 }

@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/yishanzhilu/everest/pkg/crypto"
+
 	"github.com/sirupsen/logrus"
 	"github.com/yishanzhilu/everest/pkg/common"
 
@@ -34,32 +36,48 @@ func parseToken(tokenString string) (*jwt.Token, error) {
 
 func validateToken(token *jwt.Token, c *gin.Context) error {
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		userID := claims["sub"].(string)
+		userID := claims["id"].(string)
 		c.Set("userID", userID)
+		c.Set("authorized", true)
 		logrus.WithField("UserID", userID).Info("Validated user")
 		return nil
 	}
 	return errors.New("Invalid Token")
 }
 
-// Authenticate 检查请求是否登录
-func Authenticate() gin.HandlerFunc {
+// AssignGuard will check if token is valid,
+// 		if true, then add KV authorized=true to gin.context. It will also add parsed JWT info to context
+// 		if false, then add KV authorized=false to gin.context.
+// Note: JWT won't terminate call handler if there is no token, it only do so when token is invalid
+func AssignGuard(guard *crypto.JWTGuard) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		c.Set("authorized", false)
 		tokenString := extractToken(c)
 		if tokenString == "" {
-			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "invalid token"})
+			// no token, not login
+			c.Set("authorized", false)
+		} else {
+			userID, err := guard.CheckToken(tokenString)
+			if err != nil {
+				c.Error(err)
+				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid token"})
+				return
+			}
+			c.Set("userID", userID)
+			c.Set("authorized", true)
 		}
-		token, err := parseToken(tokenString)
-		if err != nil {
-			c.Error(err)
-			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "invalid token"})
+		c.Next()
+	}
+}
+
+// Authenticate will check if call is authorized based on gin.context info
+func Authenticate() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authorized := c.GetBool("authorized")
+		if !authorized {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "forbidden, login please"})
 			return
 		}
-		err = validateToken(token, c)
-		if err != nil {
-			c.Error(err)
-			c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "invalid token"})
-			return
-		}
+		c.Next()
 	}
 }

@@ -1,6 +1,8 @@
 package common
 
 import (
+	"time"
+
 	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 	"github.com/sirupsen/logrus"
@@ -21,3 +23,9 @@ var HTTPClient *resty.Client = resty.New()
 
 // JWTSecret 是 jwt token 的秘钥
 var JWTSecret string
+
+// JWTTokenExpDuration 是 jwt token 有效的时长
+var JWTTokenExpDuration time.Duration
+
+// JWTRefreshTokenExpDuration 是 jwt refresh token 有效的时长
+var JWTRefreshTokenExpDuration time.Duration

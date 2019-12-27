@@ -10,7 +10,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"github.com/yishanzhilu/everest/pkg/common"
 )
 
 var timeFormat = "02/Jan/2006:15:04:05 -0700"
@@ -66,6 +65,13 @@ func GinLogger() gin.HandlerFunc {
 	if err != nil {
 		hostname = "unknow"
 	}
+	ginLogger := logrus.New()
+	if viper.GetString("runmode") != "debug" {
+		ginLogger.SetFormatter(&logrus.JSONFormatter{})
+	} else {
+		ginLogger.SetFormatter(&logrus.TextFormatter{})
+		ginLogger.SetOutput(os.Stdout)
+	}
 	return func(c *gin.Context) {
 		// other handler can change c.Path so:
 		path := c.Request.URL.Path
@@ -95,20 +101,20 @@ func GinLogger() gin.HandlerFunc {
 				clientUserAgent,
 				latency)
 			if len(c.Errors) > 0 {
-				common.Logger.Error(msg, c.Errors.ByType(gin.ErrorTypePrivate).String())
+				ginLogger.Error(msg, c.Errors.ByType(gin.ErrorTypePrivate).String())
 			} else {
 				if statusCode > 499 {
-					common.Logger.Error(msg)
+					ginLogger.Error(msg)
 				} else if statusCode > 399 {
-					common.Logger.Warn(msg)
+					ginLogger.Warn(msg)
 				} else {
-					common.Logger.Info(msg)
+					ginLogger.Info(msg)
 				}
 			}
 			return
 		}
 
-		entry := common.Logger.WithFields(logrus.Fields{
+		entry := ginLogger.WithFields(logrus.Fields{
 			"hostname":   hostname,
 			"statusCode": statusCode,
 			"latency":    latency, // time to process

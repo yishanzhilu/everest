@@ -4,6 +4,11 @@ import (
 	"fmt"
 	"regexp"
 
+	"github.com/spf13/viper"
+
+	"github.com/yishanzhilu/everest/pkg/user"
+	"github.com/yishanzhilu/everest/pkg/workspace"
+
 	"github.com/jinzhu/gorm"
 	"github.com/yishanzhilu/everest/pkg/common"
 
@@ -24,5 +29,12 @@ func mustConnectMySQL(url, username, password, databasename, parameter string) {
 		common.Logger.WithField("error", err).Fatal("Failed to connect MySQL DB")
 	}
 	common.Logger.Info("Connect to MySQL DB success")
+
+	if viper.GetString("runmode") == "debug" {
+		db.LogMode(true)
+	}
+	db.AutoMigrate(&workspace.WorkprofileModel{})
+	db.AutoMigrate(&user.Model{})
 	common.MySQLClient = db
+
 }

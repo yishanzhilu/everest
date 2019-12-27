@@ -15,4 +15,6 @@ func initConfig(name string) {
 		panic(err)
 	}
 	common.Logger.Info("配置初始化成功")
+	common.JWTSecret = viper.GetString("jwt.secret")
+	common.JWTTokenExpDuration = viper.GetDuration("jwt.token-exp-duration")
 }

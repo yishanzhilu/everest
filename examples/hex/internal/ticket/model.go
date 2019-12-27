@@ -2,8 +2,7 @@ package ticket
 
 import "time"
 
-// Ticket ...
-// TODO: comment
+// Model ...
 type Model struct {
 	ID          string    `json:"id" db:"id"`
 	Creator     string    `json:"creator" db:"creator"`

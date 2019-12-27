@@ -5,14 +5,13 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/yishanzhilu/everest/pkg/common"
-	"github.com/yishanzhilu/everest/pkg/http/server"
 )
 
-// Boot will bootstarp the program, commonly used with Close
+// Boot will bootstarp the program, commonly used with Cleanup
 //
 // func main() {
 // 	bootstrap.Boot()
-// 	defer bootstrap.Close()
+// 	defer bootstrap.Cleanup()
 // }
 func Boot() {
 
@@ -39,11 +38,10 @@ func Boot() {
 		wg.Done()
 	}()
 	wg.Wait()
-	server.Start()
 }
 
-// Close is used for cleaning up
-func Close() {
+// Cleanup is used for cleaning up
+func Cleanup() {
 	common.MySQLClient.Close()
 	common.RedisClient.Close()
 }
