@@ -13,14 +13,14 @@ import (
 var _ = Describe("JWT", func() {
 	guard := NewJWTGuard("111", 3600)
 	It("should be able to sign for a user with user name", func() {
-		token, err := guard.SignToken("1", "user1")
+		token, err := guard.SignToken(1, "user1")
 		Ω(err).Should(BeNil())
 		userID, err := guard.CheckToken(token)
 		Ω(err).Should(BeNil())
-		Ω(userID).Should(Equal("1"))
+		Ω(userID).Should(Equal(uint64(1)))
 	})
 	It("should be able to handle exp", func() {
-		token, err := guard.SignToken("1", "user1")
+		token, err := guard.SignToken(1, "user1")
 		Ω(err).Should(BeNil())
 		jwt.TimeFunc = func() time.Time {
 			return time.Unix(time.Now().Unix()+5000, 0)
@@ -28,6 +28,6 @@ var _ = Describe("JWT", func() {
 		userID, err := guard.CheckToken(token)
 		jwt.TimeFunc = time.Now
 		Ω(err).Should(MatchError("token expired"))
-		Ω(userID).Should(Equal(""))
+		Ω(userID).Should(Equal(uint64(1)))
 	})
 })

@@ -48,11 +48,8 @@ func (h *handler) OauthGithub(c *gin.Context) {
 	}
 	user, err := h.service.GetOrCreateUserWithGithubOauth(code)
 	if err != nil {
-		common.NewResponseErrorWithErr(
-			"oauth user fail",
-			err,
-			http.StatusUnauthorized,
-		).Abort(c)
+		c.Error(err)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Oauth fail"})
 		return
 	}
 	token, err := h.guard.SignToken(user.ID, user.Name)
@@ -64,5 +61,26 @@ func (h *handler) OauthGithub(c *gin.Context) {
 
 // RefreshToken implementation.
 func (h *handler) RefreshToken(c *gin.Context) {
-
+	userID := c.MustGet("userID").(uint64)
+	refreshToken := c.GetHeader("RefreshToken")
+	common.Logger.Debug("userID\t", userID, "\tRefreshToken\t", refreshToken)
+	if userID == 0 || refreshToken == "" {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": "invalid token or refresh token"})
+		return
+	}
+	user, err := h.service.GetUserByID(userID)
+	if err != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	if user.RefreshToken != refreshToken {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid refreshToken"})
+		return
+	}
+	token, err := h.guard.SignToken(user.ID, user.Name)
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }

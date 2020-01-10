@@ -1,0 +1,22 @@
+study-materials:
+  - title: Free Code Camp basic html and html5
+    type: [online-course, online-programming-project]
+    knowledge: HTML
+    lang:
+      - locale: en
+        url: https://www.freecodecamp.org/learn/responsive-web-design/basic-html-and-html5/
+        title: Free Code Camp basic html and html5
+      - locale: cn
+        url: https://learn.freecodecamp.one/responsive-web-design/basic-html-and-html5/
+        title: Free Code Camp HTML 基础
+  - title: Free Code Camp CSS
+    type: [online-course, online-programming-project]
+    knowledge: CSS
+    url: https://www.freecodecamp.org/learn/responsive-web-design/basic-html-and-html5/
+    lang:
+      - locale: en
+        url: https://www.freecodecamp.org/learn/responsive-web-design/basic-html-and-html5/
+        title: Free Code Camp basic html and html5
+      - locale: cn
+        url: https://learn.freecodecamp.one/responsive-web-design/basic-html-and-html5/
+        title: Free Code Camp HTML 基础

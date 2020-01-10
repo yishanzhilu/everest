@@ -9,11 +9,13 @@ require (
 	github.com/google/uuid v1.1.1
 	github.com/heptiolabs/healthcheck v0.0.0-20180807145615-6ff867650f40
 	github.com/jinzhu/gorm v1.9.11
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/onsi/ginkgo v1.7.0
 	github.com/onsi/gomega v1.4.3
 	github.com/rs/xid v1.2.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.2.0
+	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.6.1
 	gopkg.in/DATA-DOG/go-sqlmock.v1 v1.3.0 // indirect
 	gopkg.in/resty.v1 v1.12.0

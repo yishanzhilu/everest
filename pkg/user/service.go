@@ -5,12 +5,14 @@ import (
 	"encoding/hex"
 
 	"github.com/jinzhu/gorm"
-	"github.com/rs/xid"
+	"github.com/yishanzhilu/everest/pkg/models"
 )
 
 // Service abstract a yishan user's business logic
 type Service interface {
-	GetOrCreateUserWithGithubOauth(code string) (*Model, error)
+	GetUserByID(id uint64) (*models.UserModel, error)
+	// VerifyUserRefreshToken(id string, token string) (*models.UserModel, error)
+	GetOrCreateUserWithGithubOauth(code string) (*models.UserModel, error)
 }
 
 type userService struct {
@@ -26,7 +28,12 @@ func NewUserService(repo Repository, githubRepo OauthRepo) Service {
 	}
 }
 
-func (s userService) GetOrCreateUserWithGithubOauth(code string) (*Model, error) {
+// GetUserByID implementation.
+func (s *userService) GetUserByID(id uint64) (*models.UserModel, error) {
+	return s.repo.ReadByID(id)
+}
+
+func (s *userService) GetOrCreateUserWithGithubOauth(code string) (*models.UserModel, error) {
 	t, err := s.githubRepo.GetUserOauthToken(code)
 	if err != nil {
 		return nil, err
@@ -47,7 +54,7 @@ func (s userService) GetOrCreateUserWithGithubOauth(code string) (*Model, error)
 	u, err := s.repo.ReadByGithubID(gu.ID)
 	// If yes, update token and return
 	if err == nil {
-		err = s.repo.UpdateStruct(u, Model{
+		err = s.repo.UpdateStruct(u, models.UserModel{
 			GithubToken:  t.AccessToken,
 			RefreshToken: genereateRefreshToken(),
 		})
@@ -63,9 +70,8 @@ func (s userService) GetOrCreateUserWithGithubOauth(code string) (*Model, error)
 	return nil, err
 }
 
-func (s userService) CreateUserWithGithubOauth(gu *GithubUser, t *GithubToken) (*Model, error) {
-	var u Model
-	u.ID = xid.New().String()
+func (s *userService) CreateUserWithGithubOauth(gu *GithubUser, t *GithubToken) (*models.UserModel, error) {
+	var u models.UserModel
 	u.RefreshToken = genereateRefreshToken()
 	u.GithubToken = t.AccessToken
 	u.GithubID = gu.ID

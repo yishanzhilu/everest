@@ -67,8 +67,8 @@ func (r githubRepo) GetUserOauthInfo(token string) (*GithubUser, error) {
 	resp, err := req.
 		Get("https://api.github.com/user")
 	common.Logger.WithFields(logrus.Fields{
-		"error": err,
-		"resp":  resp,
+		"error":       err,
+		"github user": gu,
 	}).Debug("call done")
 	if err != nil {
 		return nil, err

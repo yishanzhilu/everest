@@ -2,6 +2,8 @@
 
 Examples for your applications and/or public libraries.
 
+You can also write some POC code here.
+
 Examples:
 
 * https://github.com/nats-io/nats.go/tree/master/examples

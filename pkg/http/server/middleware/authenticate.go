@@ -36,7 +36,7 @@ func parseToken(tokenString string) (*jwt.Token, error) {
 
 func validateToken(token *jwt.Token, c *gin.Context) error {
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		userID := claims["id"].(string)
+		userID := claims["id"].(uint64)
 		c.Set("userID", userID)
 		c.Set("authorized", true)
 		logrus.WithField("UserID", userID).Info("Validated user")
@@ -53,18 +53,14 @@ func AssignGuard(guard *crypto.JWTGuard) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("authorized", false)
 		tokenString := extractToken(c)
-		if tokenString == "" {
-			// no token, not login
-			c.Set("authorized", false)
-		} else {
+		if tokenString != "" {
 			userID, err := guard.CheckToken(tokenString)
 			if err != nil {
-				c.Error(err)
-				c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid token"})
-				return
+				c.Set("tokenErr", err.Error())
+			} else {
+				c.Set("authorized", true)
 			}
 			c.Set("userID", userID)
-			c.Set("authorized", true)
 		}
 		c.Next()
 	}
@@ -75,7 +71,8 @@ func Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authorized := c.GetBool("authorized")
 		if !authorized {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "forbidden, login please"})
+			tokenErr := c.GetString("tokenErr")
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "unauthorized", "reason": tokenErr})
 			return
 		}
 		c.Next()

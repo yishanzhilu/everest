@@ -6,9 +6,6 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/yishanzhilu/everest/pkg/user"
-	"github.com/yishanzhilu/everest/pkg/workspace"
-
 	"github.com/jinzhu/gorm"
 	"github.com/yishanzhilu/everest/pkg/common"
 
@@ -33,8 +30,7 @@ func mustConnectMySQL(url, username, password, databasename, parameter string) {
 	if viper.GetString("runmode") == "debug" {
 		db.LogMode(true)
 	}
-	db.AutoMigrate(&workspace.WorkprofileModel{})
-	db.AutoMigrate(&user.Model{})
+
 	common.MySQLClient = db
 
 }

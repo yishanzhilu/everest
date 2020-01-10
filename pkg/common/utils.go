@@ -1,40 +1,8 @@
 package common
 
 import (
-	"encoding/json"
-	"time"
-
 	"github.com/gin-gonic/gin"
 )
-
-const (
-	timeFormart = "2006-01-02T15:04:05Z"
-)
-
-// BaseModel extends gorm.Model, but change ID to sortable uuid
-type BaseModel struct {
-	ID        string     `json:"id" gorm:"PRIMARY_KEY;type:char(20);not null;column:id;comment:'主键id'"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `json:"-" sql:"index"`
-}
-
-// BaseSerialize extends gorm.Model, but change ID to sortable uuid
-type BaseSerialize struct {
-	ID        string `json:"id"`
-	CreatedAt string `json:"createdAt"`
-	UpdatedAt string `json:"updatedAt"`
-}
-
-// MarshalJSON ..
-func (m *BaseModel) MarshalJSON() ([]byte, error) {
-	type Alias BaseModel
-	return json.Marshal(&BaseSerialize{
-		ID:        m.ID,
-		CreatedAt: m.CreatedAt.Format(timeFormart),
-		UpdatedAt: m.UpdatedAt.Format(timeFormart),
-	})
-}
 
 // BaseHandler can register gin router group
 type BaseHandler interface {

@@ -6,7 +6,7 @@ $MAKEFLAGS += --silent
 .PHONY:test build init
 
 init:
-	bash ./scripts/init.sh
+	bash ./scripts/init.sh && go mod download && go mod verify
 
 dev:
 	./bin/air -c ./configs/air.conf

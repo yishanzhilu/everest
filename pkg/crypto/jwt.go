@@ -21,12 +21,12 @@ func NewJWTGuard(secret string, duration time.Duration) *JWTGuard {
 }
 
 type everestClaims struct {
-	UserID string `json:"userID"`
+	UserID uint64 `json:"userID"`
 	jwt.StandardClaims
 }
 
 // CheckToken will let JWTGuard check if a token is valid, and return visitor's userID
-func (ja *JWTGuard) CheckToken(tokenString string) (userID string, err error) {
+func (ja *JWTGuard) CheckToken(tokenString string) (userID uint64, err error) {
 	token, err := jwt.ParseWithClaims(tokenString, &everestClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -36,29 +36,29 @@ func (ja *JWTGuard) CheckToken(tokenString string) (userID string, err error) {
 	if err != nil {
 		if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
-				return "", errors.New("not even a token")
+				err = errors.New("not even a token")
 			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
-				return "", errors.New("token expired")
+				err = errors.New("token expired")
 
 			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
 				// Token is either expired or not active yet
-				return "", errors.New("token not valid yet")
+				err = errors.New("token not valid yet")
 			} else {
-				return "", fmt.Errorf("Couldn't handle this token: %e", err)
+				err = fmt.Errorf("Couldn't handle this token: %e", err)
 			}
 		} else {
-			return "", fmt.Errorf("Couldn't handle this token: %e", err)
+			err = fmt.Errorf("Couldn't handle this token: %e", err)
 		}
 	}
 
-	if claims, ok := token.Claims.(*everestClaims); ok && token.Valid {
-		return claims.UserID, nil
+	if claims, ok := token.Claims.(*everestClaims); ok {
+		return claims.UserID, err
 	}
-	return "", errors.New("Couldn't handle this token")
+	return 0, errors.New("Couldn't handle this token")
 }
 
 // SignToken implementation.
-func (ja *JWTGuard) SignToken(userID, userName string) (string, error) {
+func (ja *JWTGuard) SignToken(userID uint64, userName string) (string, error) {
 	duration := ja.duration
 	if duration == 0 {
 		duration = 3600 // default 1 hour
