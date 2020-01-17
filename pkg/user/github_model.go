@@ -29,7 +29,7 @@ type githubTokenRespError struct {
 }
 
 func (e *githubTokenRespError) Error() string {
-	return e.ErrorMessage
+	return e.ErrorDesc
 }
 
 // NewGithubTokenErr ..
@@ -47,5 +47,5 @@ func NewGithubTokenErr() *GithubToken {
 // GithubUser ..
 type GithubUser struct {
 	Name string `json:"name"`
-	ID   int64  `json:"id"`
+	ID   uint64 `json:"id"`
 }

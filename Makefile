@@ -8,8 +8,9 @@ $MAKEFLAGS += --silent
 init:
 	bash ./scripts/init.sh && go mod download && go mod verify
 
+dev: export EVEREST_CONFIG_FILE_NAME=viper.local
 dev:
-	./bin/air -c ./configs/air.conf
+	air -c ./configs/air.conf
 
 test:
 	go test ./...
@@ -18,4 +19,11 @@ test-cover:
 	mkdir codecoverage && ginkgo -r -cover -outputdir=./codecoverage/ -coverprofile=coverage.txt
 
 build:
-	go build -o ./bin/server ./cmd/server/main.go
+	GOOS="linux" go build -o ./bin/server ./cmd/server/main.go
+
+build-image:
+	bash ./build/package/build.sh
+
+migrate: export EVEREST_CONFIG_FILE_NAME=viper.local
+migrate:
+	go run cmd/database/main.go

@@ -19,7 +19,7 @@
             "mode": "test",
             "program": "${fileDirname}",
             "env": {},
-            "args": []
+            "args": ["-ginkgo.focus=Handler"]
         }
     ]
 }

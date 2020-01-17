@@ -49,15 +49,18 @@ func validateToken(token *jwt.Token, c *gin.Context) error {
 // 		if true, then add KV authorized=true to gin.context. It will also add parsed JWT info to context
 // 		if false, then add KV authorized=false to gin.context.
 // Note: JWT won't terminate call handler if there is no token, it only do so when token is invalid
-func AssignGuard(guard *crypto.JWTGuard) gin.HandlerFunc {
+func AssignGuard(guard crypto.JWTGuard) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("authorized", false)
 		tokenString := extractToken(c)
 		if tokenString != "" {
 			userID, err := guard.CheckToken(tokenString)
 			if err != nil {
+				logrus.Debug("Guard find BAD token")
+
 				c.Set("tokenErr", err.Error())
 			} else {
+				logrus.Debug("Guard find GOOD token")
 				c.Set("authorized", true)
 			}
 			c.Set("userID", userID)

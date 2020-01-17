@@ -10,7 +10,8 @@ import (
 
 // Service abstract a yishan user's business logic
 type Service interface {
-	GetUserByID(id uint64) (*models.UserModel, error)
+	GetByID(id uint64) (*models.UserModel, error)
+	UpdateByID(id uint64, newUser *models.UserModel) (*models.UserModel, error)
 	// VerifyUserRefreshToken(id string, token string) (*models.UserModel, error)
 	GetOrCreateUserWithGithubOauth(code string) (*models.UserModel, error)
 }
@@ -28,9 +29,20 @@ func NewUserService(repo Repository, githubRepo OauthRepo) Service {
 	}
 }
 
-// GetUserByID implementation.
-func (s *userService) GetUserByID(id uint64) (*models.UserModel, error) {
+func (s *userService) GetByID(id uint64) (*models.UserModel, error) {
 	return s.repo.ReadByID(id)
+}
+
+func (s *userService) UpdateByID(id uint64, newUser *models.UserModel) (*models.UserModel, error) {
+	u, err := s.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+	err = s.repo.UpdateWithStruct(u, newUser)
+	if err != nil {
+		u = nil
+	}
+	return u, err
 }
 
 func (s *userService) GetOrCreateUserWithGithubOauth(code string) (*models.UserModel, error) {
@@ -54,7 +66,7 @@ func (s *userService) GetOrCreateUserWithGithubOauth(code string) (*models.UserM
 	u, err := s.repo.ReadByGithubID(gu.ID)
 	// If yes, update token and return
 	if err == nil {
-		err = s.repo.UpdateStruct(u, models.UserModel{
+		err = s.repo.UpdateWithStruct(u, &models.UserModel{
 			GithubToken:  t.AccessToken,
 			RefreshToken: genereateRefreshToken(),
 		})
@@ -63,10 +75,11 @@ func (s *userService) GetOrCreateUserWithGithubOauth(code string) (*models.UserM
 		}
 		return u, err
 	}
-	// If Not, create ser
+	// If Not, create user and return
 	if gorm.IsRecordNotFoundError(err) {
 		return s.CreateUserWithGithubOauth(gu, t)
 	}
+	// shit happens
 	return nil, err
 }
 

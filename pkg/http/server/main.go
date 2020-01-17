@@ -6,8 +6,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/yishanzhilu/everest/pkg/common"
 	"github.com/yishanzhilu/everest/pkg/crypto"
@@ -27,12 +25,12 @@ type Server interface {
 type HTTPServer struct {
 	runmode string
 	port    string
-	guard   *crypto.JWTGuard
+	guard   crypto.JWTGuard
 	server  *http.Server
 }
 
 // NewHTTPServer NewHttpServer.
-func NewHTTPServer(runmode, port string, guard *crypto.JWTGuard) Server {
+func NewHTTPServer(runmode, port string, guard crypto.JWTGuard) Server {
 	return &HTTPServer{
 		runmode,
 		port,
@@ -49,13 +47,12 @@ func (s *HTTPServer) Start() {
 	router.Use(middleware.GinLogger())
 	router.Use(gin.Recovery())
 
-	healthCheck(router)
-
 	v1 := router.Group("/api/v1")
+	v1.GET("", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"hello": "everest"})
+	})
+	healthCheck(v1)
 	v1.Use(middleware.AssignGuard(s.guard))
-
-	// workspaceRouter := v1.Group("workspace")
-	// bootWorkspace(workspaceRouter)
 
 	userRouter := v1.Group("user")
 	bootUser(userRouter, s.guard)
@@ -74,15 +71,7 @@ func (s *HTTPServer) Shutdown(ctx context.Context) error {
 	return s.server.Shutdown(ctx)
 }
 
-func bootUser(userRouter *gin.RouterGroup, guard *crypto.JWTGuard) {
-	userHandler := constructNewUserHandler(common.Logger, common.MySQLClient, guard)
-	userHandler.RegisterPublicRoutes(userRouter)
-	userRouter.Use(middleware.Authenticate())
-	userHandler.RegisterPrivateRoutes(userRouter)
-}
-
-// constructNewUserHandler ..
-func constructNewUserHandler(logger *logrus.Logger, db *gorm.DB, guard *crypto.JWTGuard) user.Handler {
+func bootUser(userRouter *gin.RouterGroup, guard crypto.JWTGuard) {
 	githubClient := resty.New().
 		SetTimeout(30*time.Second).
 		SetHostURL("https://github.com").
@@ -91,9 +80,10 @@ func constructNewUserHandler(logger *logrus.Logger, db *gorm.DB, guard *crypto.J
 			"client_id":     viper.GetString("github.client.id"),
 			"client_secret": viper.GetString("github.client.secret"),
 		})
-	gr := user.NewGithubRepo(githubClient, logger)
-	mr := mysql.NewMysqlUserRepository(db)
+	gr := user.NewGithubRepo(githubClient, common.Logger)
+	mr := mysql.NewMysqlUserRepository(common.MySQLClient)
 	userService := user.NewUserService(mr, gr)
 	userHandler := user.NewHandler(userService, guard)
-	return userHandler
+	userHandler.RegisterPublicRoutes(userRouter)
+	userHandler.RegisterPrivateRoutes(userRouter)
 }

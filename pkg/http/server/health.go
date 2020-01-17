@@ -19,7 +19,7 @@ func RedisCheck(cache *redis.Client) healthcheck.Check {
 	}
 }
 
-func healthCheck(r *gin.Engine) {
+func healthCheck(r *gin.RouterGroup) {
 	health := healthcheck.NewHandler()
 
 	// db 链接

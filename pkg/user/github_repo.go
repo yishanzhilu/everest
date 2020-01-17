@@ -9,12 +9,7 @@ import (
 	"gopkg.in/resty.v1"
 )
 
-// OauthRepo abstract github oauth repo layer logic
-type OauthRepo interface {
-	GetUserOauthToken(code string) (*GithubToken, error)
-	GetUserOauthInfo(token string) (*GithubUser, error)
-}
-
+// githubRepo implements OauthRepo
 type githubRepo struct {
 	restClient *resty.Client
 	logger     *logrus.Logger

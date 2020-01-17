@@ -1,0 +1,20 @@
+runmode: debug
+addr: :6663
+mysql:
+  username: username
+  password: '*****************'
+  databasename: tcp(localhost:3306)/dbName
+  parameter: parseTime=true
+redis:
+  password:
+  url: localhost:6379
+github:
+  client:
+    id: '*****************'
+    secret: '*****************'
+jwt:
+  token-key: '*****************'
+  token-exp-duration: 72h
+tencentyun:
+  secret-id: '*****************'
+  secret-key: '*****************'

@@ -30,23 +30,23 @@ func (r *mysqlUserRepository) Create(user *models.UserModel) error {
 }
 
 func (r *mysqlUserRepository) ReadByID(id uint64) (*models.UserModel, error) {
-	common.Logger.Debug("ReadByID", id)
+	common.Logger.Debug("ReadByID ", id)
 	var user models.UserModel
 	user.ID = id
 	err := r.db.First(&user).Error
 	return &user, err
 }
 
-func (r *mysqlUserRepository) ReadByGithubID(id int64) (*models.UserModel, error) {
+func (r *mysqlUserRepository) ReadByGithubID(id uint64) (*models.UserModel, error) {
 	common.Logger.Debug("ReadByGithubID", id)
 	var user models.UserModel
 	err := r.db.Where("github_id = ?", id).First(&user).Error
 	return &user, err
 }
 
-// UpdateStruct implementation.
-func (r *mysqlUserRepository) UpdateStruct(user *models.UserModel, new models.UserModel) error {
-	common.Logger.Debug("UpdateGithubToken", user.ID)
-	err := r.db.Model(user).Updates(new).Error
+// UpdateWithStruct implementation.
+func (r *mysqlUserRepository) UpdateWithStruct(user *models.UserModel, newUser *models.UserModel) error {
+	common.Logger.Debug("UpdateWithStruct", user.ID)
+	err := r.db.Model(user).Updates(*newUser).Error
 	return err
 }

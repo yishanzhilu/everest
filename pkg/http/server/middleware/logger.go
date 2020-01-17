@@ -101,7 +101,7 @@ func GinLogger() gin.HandlerFunc {
 				clientUserAgent,
 				latency)
 			if len(c.Errors) > 0 {
-				ginLogger.Error(msg, c.Errors.ByType(gin.ErrorTypePrivate).String())
+				ginLogger.Error(msg, c.Errors.String())
 			} else {
 				if statusCode > 499 {
 					ginLogger.Error(msg)

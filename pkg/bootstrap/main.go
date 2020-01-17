@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"os"
 	"sync"
 
 	"github.com/spf13/viper"
@@ -14,8 +15,11 @@ import (
 // 	defer bootstrap.Cleanup()
 // }
 func Boot() {
-
-	initConfig("viper")
+	filename := os.Getenv("EVEREST_CONFIG_FILE_NAME")
+	if filename == "" {
+		filename = "viper"
+	}
+	initConfig(filename)
 	initLogger()
 	initHTTPClient()
 	var wg sync.WaitGroup
