@@ -29,3 +29,9 @@ var JWTTokenExpDuration time.Duration
 
 // JWTRefreshTokenExpDuration 是 jwt refresh token 有效的时长
 var JWTRefreshTokenExpDuration time.Duration
+
+// ContextUserID .
+const ContextUserID = "userID"
+
+// TIMESTAMP 是序列号时间戳的格式
+const TIMESTAMP = "2006-01-02T15:04:05Z"

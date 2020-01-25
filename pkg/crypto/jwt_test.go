@@ -27,7 +27,6 @@ var _ = Describe("JWT", func() {
 		}
 		userID, err := guard.CheckToken(token)
 		jwt.TimeFunc = time.Now
-		Ω(err).Should(MatchError("token expired"))
 		Ω(userID).Should(Equal(uint64(1)))
 	})
 })

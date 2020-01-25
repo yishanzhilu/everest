@@ -58,6 +58,7 @@ func (ja *jwtGuard) CheckToken(tokenString string) (userID uint64, err error) {
 		} else {
 			err = fmt.Errorf("Couldn't handle this token: %e", err)
 		}
+		return
 	}
 
 	if claims, ok := token.Claims.(*everestClaims); ok {
@@ -68,15 +69,15 @@ func (ja *jwtGuard) CheckToken(tokenString string) (userID uint64, err error) {
 
 // SignToken implementation.
 func (ja *jwtGuard) SignToken(userID uint64, userName string) (string, error) {
-	duration := ja.duration
-	if duration == 0 {
-		duration = 3600 // default 1 hour
-	}
+	// duration := ja.duration
+	// if duration == 0 {
+	// 	duration = 3600 // default 1 hour
+	// }
 	claims := everestClaims{
 		userID,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Unix() + duration,
-			Issuer:    "everest",
+			// ExpiresAt: time.Now().Unix() + duration,
+			Issuer: "everest",
 		},
 	}
 

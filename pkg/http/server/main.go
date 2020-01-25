@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/yishanzhilu/everest/pkg/workspace"
+
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/yishanzhilu/everest/pkg/common"
@@ -56,6 +58,8 @@ func (s *HTTPServer) Start() {
 
 	userRouter := v1.Group("user")
 	bootUser(userRouter, s.guard)
+
+	workspace.RegisterRoutes(v1)
 
 	s.server = &http.Server{
 		Addr:    s.port,

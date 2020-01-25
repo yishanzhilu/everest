@@ -9,5 +9,8 @@ import (
 func main() {
 	bootstrap.Boot()
 	defer bootstrap.Cleanup()
-	models.Migrate(common.MySQLClient)
+	common.MySQLClient.AutoMigrate(&models.UserModel{})
+	common.MySQLClient.AutoMigrate(&models.GoalModel{})
+	common.MySQLClient.AutoMigrate(&models.MissionModel{})
+	common.MySQLClient.AutoMigrate(&models.TaskModel{})
 }

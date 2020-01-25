@@ -89,6 +89,7 @@ func (s *userService) CreateUserWithGithubOauth(gu *GithubUser, t *GithubToken) 
 	u.GithubToken = t.AccessToken
 	u.GithubID = gu.ID
 	u.Name = gu.Name
+	u.AvatarURL = gu.AvatarURL
 	err := s.repo.Create(&u)
 	if err != nil {
 		return nil, err

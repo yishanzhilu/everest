@@ -70,14 +70,12 @@ func AssignGuard(guard crypto.JWTGuard) gin.HandlerFunc {
 }
 
 // Authenticate will check if call is authorized based on gin.context info
-func Authenticate() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		authorized := c.GetBool("authorized")
-		if !authorized {
-			tokenErr := c.GetString("tokenErr")
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "unauthorized", "reason": tokenErr})
-			return
-		}
-		c.Next()
+func Authenticate(c *gin.Context) {
+	authorized := c.GetBool("authorized")
+	if !authorized {
+		tokenErr := c.GetString("tokenErr")
+		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "unauthorized", "reason": tokenErr})
+		return
 	}
+	c.Next()
 }

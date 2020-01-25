@@ -17,7 +17,7 @@ import (
 func Boot() {
 	filename := os.Getenv("EVEREST_CONFIG_FILE_NAME")
 	if filename == "" {
-		filename = "viper"
+		filename = "viper.local"
 	}
 	initConfig(filename)
 	initLogger()

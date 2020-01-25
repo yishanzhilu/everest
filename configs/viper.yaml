@@ -1,20 +1,24 @@
 runmode: debug
 addr: :6663
 mysql:
-  username: username
-  password: '*****************'
-  databasename: tcp(localhost:3306)/dbName
+  username: user
+  password: '****'
+  databasename: tcp(localhost:3306)/dbname
   parameter: parseTime=true
 redis:
   password:
-  url: localhost:6379
+  url: 127.0.0.1:6379
 github:
   client:
-    id: '*****************'
-    secret: '*****************'
+    id: '****'
+    secret: '****'
 jwt:
-  token-key: '*****************'
+  token-key: '****'
   token-exp-duration: 72h
 tencentyun:
-  secret-id: '*****************'
-  secret-key: '*****************'
+  secret-id: '****'
+  secret-key: '****'
+  app-id: 12345
+  avatar-bucket:
+    name: avatar-1255545382
+    region: ap-shanghai

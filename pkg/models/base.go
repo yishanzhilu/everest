@@ -10,16 +10,24 @@ type BaseModel struct {
 	DeletedAt *time.Time `json:"-" gorm:"index;comment:'删除时间'"`
 }
 
-// WorkStatus is the enum of status for Goal, Mission and Task
+// WorkStatus is the enum of status for Goal and Mission
 type WorkStatus uint8
 
 const (
-	// Doing .
-	Doing WorkStatus = iota + 1
-	// Todo .
-	Todo
-	// Done .
-	Done
-	// Drop .
-	Drop
+	// StatusAny .
+	StatusAny WorkStatus = iota
+	// StatusDoing .
+	StatusDoing
+	// StatusTodo .
+	StatusTodo
+	// StatusDone .
+	StatusDone
+	// StatusDrop .
+	StatusDrop
 )
+
+// WorkStatsMap .
+var WorkStatsMap = map[string]WorkStatus{"any": 0, "doing": 1, "todo": 2, "done": 3, "drop": 4}
+
+// WorkStatsMapJSON .
+var WorkStatsMapJSON = map[WorkStatus]string{1: "doing", 2: "todo", 3: "done", 4: "drop"}

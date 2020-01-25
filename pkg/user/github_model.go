@@ -46,6 +46,7 @@ func NewGithubTokenErr() *GithubToken {
 
 // GithubUser ..
 type GithubUser struct {
-	Name string `json:"name"`
-	ID   uint64 `json:"id"`
+	Name      string `json:"name"`
+	AvatarURL string `json:"avatar_url"`
+	ID        uint64 `json:"id"`
 }

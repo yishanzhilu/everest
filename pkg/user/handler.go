@@ -38,14 +38,14 @@ func (h *handler) RegisterPublicRoutes(r *gin.RouterGroup) {
 }
 
 func (h *handler) RegisterPrivateRoutes(r *gin.RouterGroup) {
-	r.Use(middleware.Authenticate())
+	r.Use(middleware.Authenticate)
 	r.GET("", h.GetAuthenticatedUser)
 	r.PATCH("", h.UpdateAuthenticatedUser)
 }
 
 // OauthGithub will use github oauth code to find user in yishan db,
 // if user not exist, it will creat user, finally, it will return
-// a JWT token with user info included
+// a JWT token with user id.
 func (h *handler) OauthGithub(c *gin.Context) {
 	var code string
 	var ok bool

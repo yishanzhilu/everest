@@ -84,20 +84,20 @@ func GinLogger() gin.HandlerFunc {
 		method := c.Request.Method
 		clientUserAgent := c.Request.UserAgent()
 		referer := c.Request.Referer()
-		dataLength := c.Writer.Size()
+		dataBytes := c.Writer.Size()
 
-		statusColor := colorForStatus(statusCode)
-		methodColor := colorForMethod(method)
-		if dataLength < 0 {
-			dataLength = 0
+		if dataBytes < 0 {
+			dataBytes = 0
 		}
 		if viper.GetString("runmode") == "debug" {
-			msg := fmt.Sprintf("[GIN] %s |%s  %s %3d| %s  %s %-7s %s | size: %d | %s | (%dms)\n",
+			statusColor := colorForStatus(statusCode)
+			methodColor := colorForMethod(method)
+			msg := fmt.Sprintf("[GIN] %s |%s  %s %3d| %s  %s %-7s %s | size: %d bytes | %s | (%dms)\n",
 				clientIP,
 				statusColor, reset, statusCode,
 				methodColor, reset, method,
 				path,
-				dataLength,
+				dataBytes,
 				clientUserAgent,
 				latency)
 			if len(c.Errors) > 0 {
@@ -122,7 +122,7 @@ func GinLogger() gin.HandlerFunc {
 			"method":     c.Request.Method,
 			"path":       path,
 			"referer":    referer,
-			"dataLength": dataLength,
+			"dataBytes":  dataBytes,
 			"userAgent":  clientUserAgent,
 		})
 
