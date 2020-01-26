@@ -51,7 +51,7 @@ func (s *HTTPServer) Start() {
 
 	v1 := router.Group("/api/v1")
 	v1.GET("", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"hello": "everest"})
+		c.JSON(http.StatusOK, gin.H{"everest": "yishan API"})
 	})
 	healthCheck(v1)
 	v1.Use(middleware.AssignGuard(s.guard))

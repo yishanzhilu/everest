@@ -15,7 +15,7 @@ func mustConnectRedis(url string, password string) {
 	})
 	err := client.Ping().Err()
 	if err != nil {
-		common.Logger.WithField("error", err).Fatal("Failed to connect Redis DB")
+		panic("Failed to connect Redis DB")
 	}
 	common.Logger.Info("Connect to Redis DB success")
 	common.RedisClient = client

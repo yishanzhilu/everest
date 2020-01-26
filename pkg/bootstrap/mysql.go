@@ -23,7 +23,7 @@ func mustConnectMySQL(url, username, password, databasename, parameter string) {
 
 	db, err := gorm.Open("mysql", url)
 	if err != nil {
-		common.Logger.WithField("error", err).Fatal("Failed to connect MySQL DB")
+		panic("Failed to connect MySQL DB")
 	}
 	common.Logger.Info("Connect to MySQL DB success")
 

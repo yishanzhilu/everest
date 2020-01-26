@@ -23,14 +23,14 @@ func Boot() {
 	initLogger()
 	initHTTPClient()
 	var wg sync.WaitGroup
-	wg.Add(2)
-	go func() {
-		mustConnectRedis(
-			viper.GetString("redis.url"),
-			viper.GetString("redis.password"),
-		)
-		wg.Done()
-	}()
+	wg.Add(1)
+	// go func() {
+	// 	mustConnectRedis(
+	// 		viper.GetString("redis.url"),
+	// 		viper.GetString("redis.password"),
+	// 	)
+	// 	wg.Done()
+	// }()
 	go func() {
 		mustConnectMySQL(
 			viper.GetString("mysql.url"),
@@ -47,5 +47,5 @@ func Boot() {
 // Cleanup is used for cleaning up
 func Cleanup() {
 	common.MySQLClient.Close()
-	common.RedisClient.Close()
+	// common.RedisClient.Close()
 }
