@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -34,17 +33,6 @@ func parseToken(tokenString string) (*jwt.Token, error) {
 	return token, nil
 }
 
-func validateToken(token *jwt.Token, c *gin.Context) error {
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		userID := claims["id"].(uint64)
-		c.Set("userID", userID)
-		c.Set("authorized", true)
-		logrus.WithField("UserID", userID).Info("Validated user")
-		return nil
-	}
-	return errors.New("Invalid Token")
-}
-
 // AssignGuard will check if token is valid,
 // 		if true, then add KV authorized=true to gin.context. It will also add parsed JWT info to context
 // 		if false, then add KV authorized=false to gin.context.
@@ -64,6 +52,7 @@ func AssignGuard(guard crypto.JWTGuard) gin.HandlerFunc {
 				c.Set("authorized", true)
 			}
 			c.Set("userID", userID)
+			common.Logger.WithField("UserID", userID).Debug("AssignGuard report")
 		}
 		c.Next()
 	}

@@ -39,10 +39,10 @@ func postGoal(c *gin.Context) {
 		return
 	}
 	// get user info for response
-	if err := common.MySQLClient.First(&goal.User, goal.UserID).Error; err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
-		return
-	}
+	// if err := common.MySQLClient.First(&goal.User, goal.UserID).Error; err != nil {
+	// 	c.AbortWithError(http.StatusBadRequest, err)
+	// 	return
+	// }
 
 	c.JSON(http.StatusCreated, goal)
 }
@@ -56,13 +56,13 @@ func getGoalList(c *gin.Context) {
 	}
 
 	var goals []models.GoalModel
-	err := common.MySQLClient.
-		// Preload("User").
-		Where("user_id = ? AND status =? ",
-			c.MustGet(common.ContextUserID).(uint64),
-			statusCode,
-		).
-		Find(&goals).Error
+	db := common.MySQLClient.
+		Where("user_id = ? ", c.MustGet(common.ContextUserID))
+		// Preload("Missions", "status = ?", models.StatusDoing)
+	if statusCode != models.StatusAny {
+		db = db.Where("status = ?", statusCode)
+	}
+	err := db.Find(&goals).Error
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
@@ -75,6 +75,7 @@ func getGoalHelper(uid, goalID interface{}) (goal *models.GoalModel, err error) 
 	err = common.MySQLClient.
 		Where("user_id = ?", uid.(uint64)).
 		// Preload("User").
+		// Preload("Missions", "status = ?", models.StatusDoing).
 		First(goal, goalID).Error
 	return
 }
@@ -136,7 +137,7 @@ func deleteGoal(c *gin.Context) {
 		}
 
 		if err := tx.Where("goal_id = ?", goal.ID).
-			Delete(models.TaskModel{}).Error; err != nil {
+			Delete(models.RecordModel{}).Error; err != nil {
 			return err
 		}
 		if err := tx.Where("goal_id = ?", goal.ID).

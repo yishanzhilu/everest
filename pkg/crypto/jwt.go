@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/yishanzhilu/everest/pkg/common"
-
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -41,7 +39,6 @@ func (ja *jwtGuard) CheckToken(tokenString string) (userID uint64, err error) {
 		}
 		return []byte(ja.secret), nil
 	})
-	common.Logger.Debug("CheckToken", token, err)
 	if err != nil {
 		if ve, ok := err.(*jwt.ValidationError); ok {
 			if ve.Errors&jwt.ValidationErrorMalformed != 0 {

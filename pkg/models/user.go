@@ -32,8 +32,8 @@ func newUserModelSerializer(u *UserModel) *userModelSerializer {
 		Name:      u.Name,
 		AvatarURL: u.AvatarURL,
 		Minutes:   u.Minutes,
-		CreatedAt: u.CreatedAt.Format(common.TIMESTAMP),
-		UpdatedAt: u.UpdatedAt.Format(common.TIMESTAMP),
+		CreatedAt: u.CreatedAt.UTC().Format(common.TIMESTAMP),
+		UpdatedAt: u.UpdatedAt.UTC().Format(common.TIMESTAMP),
 	}
 }
 

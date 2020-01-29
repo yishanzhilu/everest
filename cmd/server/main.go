@@ -20,7 +20,7 @@ func main() {
 	guard := crypto.NewJWTGuard(viper.GetString("jwt.secret"), viper.GetDuration("jwt.exp"))
 	server := server.NewHTTPServer(
 		viper.GetString("runmode"),
-		viper.GetString("addr"),
+		viper.GetString("port"),
 		guard,
 	)
 	server.Start()

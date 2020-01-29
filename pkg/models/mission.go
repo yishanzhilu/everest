@@ -9,9 +9,9 @@ import (
 // MissionModel defines mission
 type MissionModel struct {
 	BaseModel
-	User        UserModel  `gorm:"foreignkey:UserID;association_autoupdate:false;association_autocreate:false"`
+	User        UserModel  `gorm:"foreignkey:UserID;save_associations:false"`
 	UserID      uint64     `gorm:"index"`
-	Goal        GoalModel  `gorm:"foreignkey:GoalID;association_autoupdate:false;association_autocreate:false"`
+	Goal        GoalModel  `gorm:"foreignkey:GoalID;save_associations:false"`
 	GoalID      uint64     `gorm:"index"`
 	Title       string     `gorm:"not null;size:80"`
 	Description string     `gorm:"not null;size:225"`
@@ -43,7 +43,7 @@ func (m MissionModel) MarshalJSON() ([]byte, error) {
 		GoalID:      m.Goal.ID,
 		GoalTitle:   m.Goal.Title,
 		UserID:      m.UserID,
-		CreatedAt:   m.CreatedAt.Format(common.TIMESTAMP),
-		UpdatedAt:   m.UpdatedAt.Format(common.TIMESTAMP),
+		CreatedAt:   m.CreatedAt.UTC().Format(common.TIMESTAMP),
+		UpdatedAt:   m.UpdatedAt.UTC().Format(common.TIMESTAMP),
 	})
 }

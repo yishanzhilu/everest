@@ -45,7 +45,8 @@ func postMission(c *gin.Context) {
 			return
 		}
 		mission.GoalID = goal.ID
-		mission.Goal = *goal
+		mission.Goal.ID = goal.ID
+		mission.Goal.Title = goal.Title
 	}
 
 	if err := common.MySQLClient.
@@ -78,12 +79,12 @@ func getMissionList(c *gin.Context) {
 
 	var missions []models.MissionModel
 	err = common.MySQLClient.
-		Preload("Goal").
 		Where(&models.MissionModel{
 			UserID: c.MustGet(common.ContextUserID).(uint64),
 			Status: statusCode,
-			GoalID: goalID,
 		}).
+		Where("goal_id = ?", goalID).
+		Preload("Goal").
 		Find(&missions).Error
 	if err != nil {
 		c.AbortWithError(http.StatusBadRequest, err)
@@ -112,9 +113,10 @@ func getMission(c *gin.Context) {
 }
 
 type patchMissionBody struct {
-	Title       string `json:"title" binding:"max=80"`
-	Description string `json:"description" binding:"max=255"`
-	Status      string `json:"status" binding:"omitempty,oneof=doing todo done drop"`
+	Title       string  `json:"title" binding:"max=80"`
+	Description string  `json:"description" binding:"max=255"`
+	Status      string  `json:"status" binding:"omitempty,oneof=doing todo done drop"`
+	GoalIDPtr   *uint64 `json:"goalID,omitempty"`
 }
 
 func patchMission(c *gin.Context) {
@@ -124,19 +126,47 @@ func patchMission(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	newMission := models.GoalModel{
-		Title:       body.Title,
-		Description: body.Description,
-	}
-	if body.Status != "" {
-		newMission.Status = models.WorkStatsMap[body.Status]
-	}
-
-	mission, err := getMissionHelper(c.MustGet(common.ContextUserID).(uint64), c.Param("id"))
+	// newMission := models.GoalModel{
+	// 	Title:       body.Title,
+	// 	Description: body.Description,
+	// }
+	// if body.Status != "" {
+	// 	newMission.Status = models.WorkStatsMap[body.Status]
+	// }
+	uid := c.MustGet(common.ContextUserID)
+	mission, err := getMissionHelper(uid, c.Param("id"))
 	if err != nil {
 		handleDBError(c, err, "mission")
 		return
 	}
+	newMission := make(map[string]interface{})
+	if body.Title != "" && body.Title != mission.Title {
+		newMission["content"] = body.Title
+	}
+	newStatus := models.WorkStatsMap[body.Status]
+	if body.Status != "" && mission.Status != newStatus {
+		newMission["status"] = newStatus
+	}
+	if body.GoalIDPtr != nil {
+		goalID := *(body.GoalIDPtr)
+		if mission.GoalID != goalID {
+			if goalID > 0 {
+				goal, err := getGoalHelper(uid, goalID)
+				if err != nil {
+					c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"goalID": err.Error()})
+					return
+				}
+				mission.Goal.ID = goal.ID
+				mission.Goal.Title = goal.Title
+				newMission["goal_id"] = goal.ID
+			} else {
+				mission.Goal.ID = 0
+				mission.Goal.Title = ""
+				newMission["goal_id"] = 0
+			}
+		}
+	}
+
 	err = common.MySQLClient.
 		Model(mission).
 		Updates(newMission).Error
@@ -160,7 +190,7 @@ func deleteMission(c *gin.Context) {
 		}
 
 		if err := tx.Where("mission_id = ?", mission.ID).
-			Delete(models.TaskModel{}).Error; err != nil {
+			Delete(models.RecordModel{}).Error; err != nil {
 			return err
 		}
 		return nil

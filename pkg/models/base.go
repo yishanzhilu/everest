@@ -31,3 +31,8 @@ var WorkStatsMap = map[string]WorkStatus{"any": 0, "doing": 1, "todo": 2, "done"
 
 // WorkStatsMapJSON .
 var WorkStatsMapJSON = map[WorkStatus]string{1: "doing", 2: "todo", 3: "done", 4: "drop"}
+
+// WorkStats .
+type WorkStats struct {
+	Status WorkStatus `gorm:"comment:'0:any, 1:doing, 2:todo, 3:done, 4:drop'"`
+}
