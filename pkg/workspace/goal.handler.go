@@ -19,7 +19,7 @@ func registerGoalRoutes(r *gin.RouterGroup) {
 
 type postGoalBody struct {
 	Title       string `json:"title" binding:"required,max=80"`
-	Description string `json:"description" binding:"required,max=255"`
+	Description string `json:"description" binding:"max=255"`
 	Status      string `json:"status" binding:"oneof=doing todo done drop"`
 }
 

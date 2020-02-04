@@ -20,7 +20,7 @@ func registerMissionRoutes(r *gin.RouterGroup) {
 
 type postMissionBody struct {
 	Title       string `json:"title" binding:"required,max=80"`
-	Description string `json:"description" binding:"required,max=255"`
+	Description string `json:"description" binding:"max=255"`
 	GoalID      uint64 `json:"goalID"`
 	Status      string `json:"status" binding:"oneof=doing todo done drop"`
 }
@@ -141,7 +141,10 @@ func patchMission(c *gin.Context) {
 	}
 	newMission := make(map[string]interface{})
 	if body.Title != "" && body.Title != mission.Title {
-		newMission["content"] = body.Title
+		newMission["title"] = body.Title
+	}
+	if body.Description != "" && body.Description != mission.Description {
+		newMission["description"] = body.Description
 	}
 	newStatus := models.WorkStatsMap[body.Status]
 	if body.Status != "" && mission.Status != newStatus {
