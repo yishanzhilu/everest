@@ -170,11 +170,47 @@ func getRecord(c *gin.Context) {
 }
 
 func deleteRecord(c *gin.Context) {
-	record, err := getRecordHelper(c.MustGet(common.ContextUserID), c.Param("id"))
+	uid := c.MustGet(common.ContextUserID).(uint64)
+	record, err := getRecordHelper(uid, c.Param("id"))
 	if err != nil {
 		handleDBError(c, err, "record")
 		return
 	}
+
+	err = common.MySQLClient.Transaction(func(tx *gorm.DB) error {
+		// do some database operations in the transaction (use 'tx' from this point, not 'db')
+		if err := tx.Delete(record).Error; err != nil {
+			return err
+		}
+		if record.Minutes > 0 {
+			if record.Goal.ID > 0 {
+				goal := models.GoalModel{}
+				goal.ID = record.Goal.ID
+				if err := tx.Model(&goal).
+					Update("minutes", gorm.Expr("minutes - ?", record.Minutes)).
+					Error; err != nil {
+					return err
+				}
+			}
+			if record.Mission.ID > 0 {
+				mission := models.MissionModel{}
+				mission.ID = record.Mission.ID
+				if err := tx.Model(&mission).
+					Update("minutes", gorm.Expr("minutes - ?", record.Minutes)).
+					Error; err != nil {
+					return err
+				}
+			}
+			user := models.UserModel{}
+			user.ID = uid
+			if err := tx.Model(&user).
+				Update("minutes", gorm.Expr("minutes - ?", record.Minutes)).
+				Error; err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 	if err := common.MySQLClient.Delete(record).Error; err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
