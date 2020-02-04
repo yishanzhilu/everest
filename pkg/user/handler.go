@@ -56,7 +56,7 @@ func (h *handler) OauthGithub(c *gin.Context) {
 	user, err := h.service.GetOrCreateUserWithGithubOauth(code)
 	if err != nil {
 		c.Error(err)
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
 		return
 	}
 	token, err := h.guard.SignToken(user.ID, user.Name)
@@ -76,7 +76,7 @@ func (h *handler) RefreshToken(c *gin.Context) {
 	// get userID in context which was set in AssignGuard middleware
 	rp := &refreshTokenParameters{}
 	if err := c.ShouldBindJSON(rp); err != nil {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 	common.Logger.Debug("EverestUserID\t", rp.UserID, "\tEverestRefreshToken\t", rp.RefreshToken)
@@ -90,7 +90,7 @@ func (h *handler) RefreshToken(c *gin.Context) {
 		return
 	}
 	if user.RefreshToken != rp.RefreshToken {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid refreshToken"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "invalid refreshToken")
 		return
 	}
 	token, err := h.guard.SignToken(user.ID, user.Name)
@@ -112,7 +112,7 @@ func (h *handler) UpdateAuthenticatedUser(c *gin.Context) {
 
 	up := &updateAuthenticatedUserParameters{}
 	if err := c.ShouldBindJSON(up); err != nil {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 	newUser := &models.UserModel{}
@@ -120,7 +120,7 @@ func (h *handler) UpdateAuthenticatedUser(c *gin.Context) {
 	newUser.AvatarURL = up.AvatarURL
 	user, err := h.service.UpdateByID(userID, newUser)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, user)
@@ -131,7 +131,7 @@ func (h *handler) GetAuthenticatedUser(c *gin.Context) {
 	userID := c.MustGet("userID").(uint64)
 	user, err := h.service.GetByID(userID)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, user)
