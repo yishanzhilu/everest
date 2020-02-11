@@ -16,7 +16,7 @@ func abortWithPublicError(c *gin.Context, code int, err error, meta string) {
 		if meta != "" {
 			cErr.SetMeta(meta)
 		}
-		c.AbortWithStatusJSON(code, c.Errors.JSON())
+		c.AbortWithStatusJSON(code, c.Errors.String())
 		return
 	}
 }

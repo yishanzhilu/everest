@@ -10,7 +10,7 @@ import (
 type GoalModel struct {
 	BaseModel
 	Title       string     `gorm:"not null;size:80"`
-	Description string     `gorm:"not null;size:225"`
+	Description string     `gorm:"not null;size:255"`
 	Status      WorkStatus `gorm:"index:idx_status;"`
 	Minutes     uint64
 	Missions    []MissionModel `gorm:"foreignkey:GoalID"`

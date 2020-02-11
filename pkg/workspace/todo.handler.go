@@ -19,7 +19,6 @@ func registerTodoRoutes(r *gin.RouterGroup) {
 
 type postTodoBody struct {
 	Content   string `json:"content" binding:"required,max=255"`
-	Minutes   uint16 `json:"minutes" binding:"max=480"`
 	GoalID    uint64 `json:"goalID"`
 	MissionID uint64 `json:"missionID"`
 }
@@ -130,7 +129,7 @@ func getTodo(c *gin.Context) {
 }
 
 type patchTodoBody struct {
-	Content string `json:"content" binding:"max=80"`
+	Content string `json:"content" binding:"max=255"`
 	Status  string `json:"status" binding:"omitempty,oneof=done"`
 	// GoalID is a pointer so we can know if user pass 0 explictly which means relove relation
 	GoalIDPtr *uint64 `json:"goalID,omitempty"`

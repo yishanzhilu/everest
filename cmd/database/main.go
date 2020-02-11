@@ -19,7 +19,7 @@ func main() {
 	common.MySQLClient.AutoMigrate(&models.MissionModel{})
 	common.MySQLClient.AutoMigrate(&models.RecordModel{})
 	common.MySQLClient.AutoMigrate(&models.TodoModel{})
-	LoadCSV(common.MySQLClient, "record_models", true)
+	// LoadCSV(common.MySQLClient, "record_models", true)
 }
 
 // LoadCSV 会把 /tmp/seeds/:name 路径中的csv加载到表表中，需要保证csv字段顺序和model一致

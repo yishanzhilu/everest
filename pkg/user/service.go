@@ -67,8 +67,7 @@ func (s *userService) GetOrCreateUserWithGithubOauth(code string) (*models.UserM
 	// If yes, update token and return
 	if err == nil {
 		err = s.repo.UpdateWithStruct(u, &models.UserModel{
-			GithubToken:  t.AccessToken,
-			RefreshToken: genereateRefreshToken(),
+			GithubToken: t.AccessToken,
 		})
 		if err != nil {
 			u = nil

@@ -1,5 +1,5 @@
 runmode: debug
-addr: :6663
+port: :6663
 mysql:
   username: user
   password: '****'

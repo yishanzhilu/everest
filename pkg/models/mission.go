@@ -14,7 +14,7 @@ type MissionModel struct {
 	Goal        GoalModel  `gorm:"foreignkey:GoalID;save_associations:false"`
 	GoalID      uint64     `gorm:"index"`
 	Title       string     `gorm:"not null;size:80"`
-	Description string     `gorm:"not null;size:225"`
+	Description string     `gorm:"not null;size:255"`
 	Status      WorkStatus `gorm:"index"`
 	Minutes     uint64
 }

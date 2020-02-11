@@ -49,6 +49,7 @@ func postGoal(c *gin.Context) {
 
 func getGoalList(c *gin.Context) {
 	status := c.DefaultQuery("status", "any")
+	withMission := c.DefaultQuery("missions", "false")
 	statusCode, ok := models.WorkStatsMap[status]
 	if !ok {
 		c.AbortWithStatus(http.StatusBadRequest)
@@ -62,9 +63,13 @@ func getGoalList(c *gin.Context) {
 	if statusCode != models.StatusAny {
 		db = db.Where("status = ?", statusCode)
 	}
-	err := db.Find(&goals).Error
+	if withMission == "true" {
+		db = db.Preload("Missions")
+
+	}
+	err := db.Order("updated_at desc").Find(&goals).Error
 	if err != nil {
-		c.AbortWithError(http.StatusBadRequest, err)
+		handleDBError(c, err, "goal")
 		return
 	}
 	c.JSON(http.StatusOK, goals)
