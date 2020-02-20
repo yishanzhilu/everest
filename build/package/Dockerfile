@@ -4,6 +4,7 @@
 FROM golang:alpine AS builder
 # Install git.
 # Git is required for fetching the dependencies.
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 RUN apk update && apk add --no-cache git
 # Create appuser.
 ENV USER=appuser
@@ -37,6 +38,7 @@ RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /everest/bin/server ./c
 # STEP 2 build a small image
 ############################
 FROM alpine
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 RUN apk update && apk add --no-cache bash
 # Import the user and group files from the builder.
 COPY --from=builder /etc/passwd /etc/passwd
