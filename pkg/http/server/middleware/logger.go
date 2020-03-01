@@ -130,11 +130,11 @@ func GinLogger() gin.HandlerFunc {
 			entry.Errorln(c.Errors.ByType(gin.ErrorTypePrivate).String())
 		} else {
 			if statusCode > 499 {
-				entry.Error("\n")
+				entry.Error()
 			} else if statusCode > 399 {
-				entry.Warn("\n")
+				entry.Warn()
 			} else {
-				entry.Info("\n")
+				entry.Info()
 			}
 		}
 	}
