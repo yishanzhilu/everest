@@ -40,6 +40,9 @@ RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o /everest/bin/server ./c
 FROM alpine
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
 RUN apk update && apk add --no-cache bash
+# fix timezone
+COPY --from=0 /usr/local/go/lib/time/zoneinfo.zip /opt/zoneinfo.zip
+ENV ZONEINFO /opt/zoneinfo.zip
 # Import the user and group files from the builder.
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
