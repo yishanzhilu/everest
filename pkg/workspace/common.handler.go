@@ -36,6 +36,7 @@ func handleDBError(c *gin.Context, err error, meta string) {
 func RegisterRoutes(r *gin.RouterGroup) {
 	r.Use(middleware.Authenticate)
 	r.GET("/overview", getDoingGoalAndMissions)
+	r.GET("/search", keyWordSearch)
 	registerGoalRoutes(r)
 	registerMissionRoutes(r)
 	registerRecordRoutes(r)
@@ -68,4 +69,32 @@ func getDoingGoalAndMissions(c *gin.Context) {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 	c.JSON(http.StatusOK, gin.H{"goals": goals, "missions": missions})
+}
+
+func keyWordSearch(c *gin.Context) {
+	// uid := c.MustGet(common.ContextUserID)
+	q, ok := c.GetQuery("q")
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusBadRequest, "search must has keyword")
+	}
+	// var goals []models.GoalModel
+	// var missions []models.MissionModel
+	// err := common.MySQLClient.
+	// 	Preload("Missions", "status = ?", models.StatusDoing).
+	// 	Where("user_id = ? AND status = ?", uid, models.StatusDoing).
+	// 	Find(&goals).Error
+	// if err != nil {
+	// 	c.AbortWithError(http.StatusInternalServerError, err)
+	// }
+	// err = common.MySQLClient.Where(
+	// 	"user_id = ? AND status = ? AND goal_id = ?",
+	// 	uid,
+	// 	models.StatusDoing,
+	// 	0,
+	// ).Find(&missions).
+	// 	Error
+	// if err != nil {
+	// 	c.AbortWithError(http.StatusInternalServerError, err)
+	// }
+	c.JSON(http.StatusOK, gin.H{"q": q})
 }
