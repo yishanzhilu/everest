@@ -15,8 +15,17 @@ import (
 )
 
 func extractToken(c *gin.Context) string {
+
 	tokenString := c.GetHeader("Authorization")
+	if tokenString == "" {
+		var err error
+		tokenString, err = c.Cookie("x-tai-everest-token")
+		if err != nil {
+			return ""
+		}
+	}
 	tokenString = strings.Replace(tokenString, "Bearer ", "", -1)
+
 	return tokenString
 }
 

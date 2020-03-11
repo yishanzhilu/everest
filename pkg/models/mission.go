@@ -27,6 +27,7 @@ type missionModelSerializer struct {
 	Minutes     uint64 `json:"minutes"`
 	GoalID      uint64 `json:"goalID,omitempty"`
 	GoalTitle   string `json:"goalTitle,omitempty"`
+	GoalStatus  string `json:"goalStatus,omitempty"`
 	UserID      uint64 `json:"ownerID,omitempty"`
 	CreatedAt   string `json:"createdAt" `
 	UpdatedAt   string `json:"updatedAt"`
@@ -42,6 +43,7 @@ func (m MissionModel) MarshalJSON() ([]byte, error) {
 		Minutes:     m.Minutes,
 		GoalID:      m.Goal.ID,
 		GoalTitle:   m.Goal.Title,
+		GoalStatus:  WorkStatsMapJSON[m.Goal.Status],
 		UserID:      m.UserID,
 		CreatedAt:   m.CreatedAt.UTC().Format(common.TIMESTAMP),
 		UpdatedAt:   m.UpdatedAt.UTC().Format(common.TIMESTAMP),
