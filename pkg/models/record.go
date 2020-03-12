@@ -13,6 +13,7 @@ type RecordModel struct {
 	BaseModel
 	Content   string
 	Review    string
+	Mood      string `gorm:"not null;size:10"`
 	Minutes   uint16
 	Goal      GoalModel    `gorm:"foreignkey:GoalID;association_autoupdate:false;association_autocreate:false"`
 	GoalID    uint64       `gorm:"index"`
@@ -26,6 +27,7 @@ type recordModelSerializer struct {
 	ID           uint64 `json:"id"`
 	Content      string `json:"content" `
 	Review       string `json:"review"`
+	Mood         string `json:"mood"`
 	Minutes      uint16 `json:"minutes"`
 	GoalID       uint64 `json:"goalID,omitempty"`
 	GoalTitle    string `json:"goalTitle,omitempty"`
@@ -42,6 +44,7 @@ func (t RecordModel) MarshalJSON() ([]byte, error) {
 		ID:           t.ID,
 		Content:      t.Content,
 		Review:       t.Review,
+		Mood:         t.Mood,
 		Minutes:      t.Minutes,
 		GoalID:       t.GoalID,
 		GoalTitle:    t.Goal.Title,

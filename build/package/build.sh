@@ -1,2 +1,2 @@
 # bin/bash
-docker build -t everest:1.0.0 -f ./build/package/Dockerfile .
+docker build -t everest:"$VERSION" -f ./build/package/Dockerfile .

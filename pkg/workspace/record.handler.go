@@ -20,6 +20,7 @@ func registerRecordRoutes(r *gin.RouterGroup) {
 type postRecordBody struct {
 	Content   string `json:"content" binding:"required,max=255"`
 	Review    string `json:"review" binding:"max=255"`
+	Mood      string `json:"mood" binding:"max=10"`
 	Minutes   uint16 `json:"minutes" binding:"max=480"`
 	GoalID    uint64 `json:"goalID"`
 	MissionID uint64 `json:"missionID"`
@@ -37,6 +38,7 @@ func postRecord(c *gin.Context) {
 		Content: body.Content,
 		Review:  body.Review,
 		Minutes: body.Minutes,
+		Mood:    body.Mood,
 		UserID:  uid,
 	}
 
