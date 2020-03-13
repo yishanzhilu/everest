@@ -130,7 +130,7 @@ func getTodo(c *gin.Context) {
 
 type patchTodoBody struct {
 	Content string `json:"content" binding:"max=255"`
-	Status  string `json:"status" binding:"omitempty,oneof=done"`
+	Status  string `json:"status" binding:"omitempty,oneof=done doing"`
 	// GoalID is a pointer so we can know if user pass 0 explictly which means relove relation
 	GoalIDPtr *uint64 `json:"goalID,omitempty"`
 	MissionID uint64  `json:"missionID"`
