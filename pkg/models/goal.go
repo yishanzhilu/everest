@@ -14,7 +14,7 @@ type GoalModel struct {
 	Status      WorkStatus `gorm:"index:idx_status;"`
 	Minutes     uint64
 	Missions    []MissionModel `gorm:"foreignkey:GoalID"`
-	User        UserModel      `gorm:"foreignkey:UserID;association_autoupdate:false;association_autocreate:false"`
+	User        UserModel      `gorm:"foreignkey:UserID;save_associations:false"`
 	UserID      uint64         `gorm:"index"`
 }
 

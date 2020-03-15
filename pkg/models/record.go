@@ -15,11 +15,11 @@ type RecordModel struct {
 	Review    string
 	Mood      string `gorm:"not null;size:10"`
 	Minutes   uint16
-	Goal      GoalModel    `gorm:"foreignkey:GoalID;association_autoupdate:false;association_autocreate:false"`
+	Goal      GoalModel    `gorm:"foreignkey:GoalID;save_associations:false"`
 	GoalID    uint64       `gorm:"index"`
-	Mission   MissionModel `gorm:"foreignkey:MissionID;association_autoupdate:false;association_autocreate:false"`
+	Mission   MissionModel `gorm:"foreignkey:MissionID;save_associations:false"`
 	MissionID uint64       `gorm:"index"`
-	User      UserModel    `gorm:"foreignkey:UserID;association_autoupdate:false;association_autocreate:false"`
+	User      UserModel    `gorm:"foreignkey:UserID;save_associations:false"`
 	UserID    uint64       `gorm:"index"`
 }
 

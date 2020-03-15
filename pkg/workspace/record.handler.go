@@ -14,6 +14,7 @@ func registerRecordRoutes(r *gin.RouterGroup) {
 	r.POST("/records", postRecord)
 	r.GET("/records", getRecordList)
 	r.GET("/record/:id", getRecord)
+	r.PATCH("/record/:id", patchRecord)
 	r.DELETE("/record/:id", deleteRecord)
 }
 
@@ -155,7 +156,6 @@ func getRecordHelper(uid, recordID interface{}) (record *models.RecordModel, err
 	record = &models.RecordModel{}
 	err = common.MySQLClient.
 		Where("user_id = ?", uid).
-		// Preload("User").
 		Preload("Goal").
 		Preload("Mission").
 		First(record, recordID).Error
@@ -169,6 +169,85 @@ func getRecord(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, *mission)
+}
+
+type patchRecordBody struct {
+	Content string `json:"content" binding:"max=255"`
+	Review  string `json:"review" binding:"max=255"`
+	Mood    string `json:"mood" binding:"max=10"`
+	Minutes uint16 `json:"minutes" binding:"max=480"`
+}
+
+func patchRecord(c *gin.Context) {
+
+	var body patchRecordBody
+	err := c.BindJSON(&body)
+	if err != nil {
+		return
+	}
+	uid := c.MustGet(common.ContextUserID).(uint64)
+	record, err := getRecordHelper(uid, c.Param("id"))
+	if err != nil {
+		handleDBError(c, err, "record")
+		return
+	}
+	changed := make(map[string]interface{})
+	// changed["goal_id"] = record.GoalID
+	// changed["mission_id"] = record.MissionID
+	if body.Content != "" && body.Content != record.Content {
+		changed["content"] = body.Content
+	}
+	if body.Review != record.Review {
+		changed["review"] = body.Review
+	}
+	if body.Mood != record.Mood {
+		changed["mood"] = body.Mood
+	}
+	if body.Minutes != record.Minutes {
+		changed["minutes"] = body.Minutes
+	}
+	minutesDiff := 0
+	minutesDiff = int(body.Minutes) - int(record.Minutes)
+	err = common.MySQLClient.Transaction(func(tx *gorm.DB) error {
+		// do some database operations in the transaction (use 'tx' from this point, not 'db')
+		if err := tx.Model(record).
+			Updates(changed).Error; err != nil {
+			return err
+		}
+		if minutesDiff != 0 {
+			if record.Goal.ID > 0 {
+				goal := models.GoalModel{}
+				goal.ID = record.Goal.ID
+				if err := tx.Model(&goal).
+					Update("minutes", gorm.Expr("minutes + ?", minutesDiff)).
+					Error; err != nil {
+					return err
+				}
+			}
+			if record.Mission.ID > 0 {
+				mission := models.MissionModel{}
+				mission.ID = record.Mission.ID
+				if err := tx.Model(&mission).
+					Update("minutes", gorm.Expr("minutes + ?", minutesDiff)).
+					Error; err != nil {
+					return err
+				}
+			}
+			user := models.UserModel{}
+			user.ID = uid
+			if err := tx.Model(&user).
+				Update("minutes", gorm.Expr("minutes + ?", minutesDiff)).
+				Error; err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, *record)
 }
 
 func deleteRecord(c *gin.Context) {
