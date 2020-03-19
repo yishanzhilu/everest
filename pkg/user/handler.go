@@ -56,7 +56,7 @@ func (h *handler) OauthGithub(c *gin.Context) {
 	user, err := h.service.GetOrCreateUserWithGithubOauth(code)
 	if err != nil {
 		c.Error(err)
-		c.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "Github 登录失败")
 		return
 	}
 	token, err := h.guard.SignToken(user.ID, user.Name)

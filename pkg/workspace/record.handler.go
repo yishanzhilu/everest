@@ -19,8 +19,8 @@ func registerRecordRoutes(r *gin.RouterGroup) {
 }
 
 type postRecordBody struct {
-	Content   string `json:"content" binding:"required,max=255"`
-	Review    string `json:"review" binding:"max=255"`
+	Content   string `json:"content" binding:"required,max=1000"`
+	Review    string `json:"review" binding:"max=1000"`
 	Mood      string `json:"mood" binding:"max=10"`
 	Minutes   uint16 `json:"minutes" binding:"max=480"`
 	GoalID    uint64 `json:"goalID"`
@@ -30,7 +30,8 @@ type postRecordBody struct {
 func postRecord(c *gin.Context) {
 	var body postRecordBody
 	var err error
-	if err = c.BindJSON(&body); err != nil {
+	if err = c.ShouldBindJSON(&body); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -172,8 +173,8 @@ func getRecord(c *gin.Context) {
 }
 
 type patchRecordBody struct {
-	Content string `json:"content" binding:"max=255"`
-	Review  string `json:"review" binding:"max=255"`
+	Content string `json:"content" binding:"max=1000"`
+	Review  string `json:"review" binding:"max=1000"`
 	Mood    string `json:"mood" binding:"max=10"`
 	Minutes uint16 `json:"minutes" binding:"max=480"`
 }

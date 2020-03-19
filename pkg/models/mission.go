@@ -9,12 +9,12 @@ import (
 // MissionModel defines mission
 type MissionModel struct {
 	BaseModel
-	User        UserModel  `gorm:"foreignkey:UserID;save_associations:false"`
-	UserID      uint64     `gorm:"index"`
-	Goal        GoalModel  `gorm:"foreignkey:GoalID;save_associations:false"`
-	GoalID      uint64     `gorm:"index"`
-	Title       string     `gorm:"not null;size:80"`
-	Description string     `gorm:"not null;size:255"`
+	User        UserModel `gorm:"foreignkey:UserID;save_associations:false"`
+	UserID      uint64    `gorm:"index"`
+	Goal        GoalModel `gorm:"foreignkey:GoalID;save_associations:false"`
+	GoalID      uint64    `gorm:"index"`
+	Title       string
+	Description string
 	Status      WorkStatus `gorm:"index"`
 	Minutes     uint64
 }
